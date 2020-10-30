@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.myboard.mapper.BoardMapper">
+   <sql id="search">
+  <where>
+  	
+ 		<if test='word!=null and field =="writer"'>
+ 			writer like '%${word}%'
+  		</if>
+  		<if test='word!=null and field =="content"'>
+ 			content like '%'||#{word}||'%'
+  		</if>
+
+	</where>
+  </sql>
+   
+<!--전체보기 -->
+  <select id="findAlls"  
+             resultType="com.myboard.dto.BoardDTO"
+             parameterType="com.myboard.util.SearchDTO">
+ 
+   select num,title,content,writer,regdate,hitcount,password  
+	from 
+	(
+	select /*+INDEX_DESC(springboard SPRINGBORAD_PK) */
+	rownum rn, num, title, content, writer, regdate, hitcount, password
+	from
+	springboard
+	where
+	<include refid="search"></include>	
+		<![CDATA[
+			rownum <= #{pageNum} * #{amount}
+			)
+			where rn > (#{pageNum} -1) * #{amount}
+		]]>
+  </select>  
+  
+  <!-- 개수 -->
+  <select id="getCount" resultType="int" 
+    parameterType="com.myboard.util.SearchDTO" >
+    	select count(*) from springboard
+		<include refid="search"></include>
+    
+    </select>
+    <!--  상세보기 -->
+    <select id="findByNum" resultType="com.myboard.dto.BoardDTO">
+    select * from  springboard where num = #{num}
+    </select>
+    
+    <!-- reply  count  1  증가 -->
+    <update id="updateReplyCnt">
+    update springboard set replycnt = replycnt + #{amount}
+	where num = #{bnum} 
+    </update>
+  </mapper>
+  
+  
+  
+  
+  

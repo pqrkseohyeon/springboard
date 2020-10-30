@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper 
+   namespace="com.myboard.mapper.CommentMapper">
+   
+   <select id="getList" 
+   resultType="com.myboard.dto.CommentDTO">
+   select * from 
+   commentspringboard 
+   where
+   bnum=#{bum}
+   </select>
+   
+   <!-- 추가 -->
+   <insert id="insert">
+   insert into commentspringboard
+   values(commentspringboard_seq.nextval,'aa',#{content}, sysdate, #{bnum})
+   
+   </insert>
+   <!--삭제 -->
+   <delete id="delete">
+   delete from commentspringboard where cnum=#{cnum}
+   </delete>
+  </mapper>
+  
+  
+  
+  
+  

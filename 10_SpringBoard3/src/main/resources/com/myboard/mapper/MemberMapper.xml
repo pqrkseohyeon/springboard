@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <!-- 매퍼 네임스페이스 > 이 파일명까지 제대로 입력해야함 -->
+ <mapper namespace="com.myboard.mapper.MemberMapper">
+ 
+ <sql id="search">
+  <where>
+   <if test='word!=null and field=="name"'>
+		name like '%${word}%'      
+   </if>
+   <if test='word!=null and field=="addr"'>
+   		addr like '%'||#{word}||'%'
+   </if>
+  </where> 
+ </sql>
+ 
+ 
+<insert id="insert" parameterType="com.myboard.util.MemberDTO">
+	insert into springmember values(#{id}, #{pass}, #{name}, #{addr}, #{memo}, sysdate)
+</insert>
+
+<select id="list" resultType="com.myboard.util.MemberDTO" parameterType="HashMap">
+	select * from 
+	 (select aa.*, rownum rn from
+	  (select * from springmember <include refid="search"/>
+	   ) aa
+	    where rownum &lt;=#{endRow})
+	     where rn>=#{startRow}  	
+</select>
+
+<select id="count" parameterType="com.myboard.util.MemberDTO" resultType="int">
+	select count(*) from springmember
+</select>
+ 
+ <select id="logincheck" resultType="com.myboard.util.MemberDTO">
+ 	select * from springmember where id=#{id}  	
+ </select>
+ 
+  <select id="idcheck" resultType="com.myboard.util.MemberDTO">
+ 	select * from springmember where id=#{id}  	
+ </select>
+ 
+ </mapper>

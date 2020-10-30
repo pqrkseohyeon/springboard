@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="com.myboard.mapper.MemberMapper">
+
+<!-- 추가하기 -->
+<insert id="mInsert" parameterType="com.myboard.dto.MemberDTO">
+	insert into springmember 
+	values (#{id}, #{pass}, #{name}, #{addr}, #{memo}, sysdate)
+</insert> 
+ 
+<!-- 아이디 중복확인 -->
+<select id="idCheck" parameterType="String" resultType="int">
+	select count(*) from springmember where id=#{id}
+</select>
+
+<!-- 로그인 -->
+<select id="mLogin" resultType="com.myboard.dto.MemberDTO">
+	select * from springmember where id=#{id}
+</select>
+
+<!-- 상세보기 -->
+<select id="mDetail" resultType="com.myboard.dto.MemberDTO">
+	select * from springmember where id=#{id}
+</select>
+
+ </mapper>

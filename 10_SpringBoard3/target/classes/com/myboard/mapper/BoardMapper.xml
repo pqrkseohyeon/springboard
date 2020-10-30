@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <!-- 매퍼 네임스페이스 > 이 파일명까지 제대로 입력해야함 -->
+ <mapper namespace="com.myboard.mapper.BoardMapper">
+ 
+ <!-- 검색창에 검색글자가 있을 시에만 검색 -->
+ <sql id="search">
+ 	<where>
+ 		<if test='word!=null and field=="writer"' >
+ 			writer like '%${word}%'
+ 		</if>
+ 		<if test='word!=null and field=="content"' >
+ 			content like '%'||#{word}||'%'
+ 		</if>
+ 	</where> 
+ </sql>
+ 
+ <!-- 전체보기 -->				<!-- parameterType 적어도 안적어도 상관없댜 ,, -->
+ <select id="findAlls" resultType="com.myboard.dto.BoardDTO" parameterType="com.myboard.util.SearchDTO" >
+ 							<!-- refid : reference id -->
+ 	select * from ( 
+ 	  select /*+INDEX_DESC(springboard SPRINGBOARD_PK) */
+ 	   rownum rn, num, title, content, writer, regdate, hitcount, password, replycnt
+ 	    from springboard 
+ 	     where
+ 	   
+ 	   <include refid="search"></include>
+ 	     <![CDATA[
+ 	       rownum <= #{pageNum} * #{amount}
+ 	       )
+ 	       where rn > (#{pageNum}-1)*#{amount}
+ 	   	]]>
+ </select>
+ 
+ <!-- 상세보기 -->
+ <select id="view" parameterType="int" resultType="com.myboard.dto.BoardDTO">
+ 	select * from springboard where num=#{num}
+ </select>
+ 
+ <!-- 조회수 +1 -->
+ <update id="plusCnt" parameterType="int">
+ 	update springboard set hitcount = hitcount+1 where num=#{num}
+ </update>
+ 
+ <!-- 수정하기 -->
+ <update id="update" parameterType="com.myboard.dto.BoardDTO">
+ 	update springboard set title=#{title}, content=#{content}, writer=#{writer}, password=#{password}  where num=#{num}
+ </update>
+ 
+ <!-- 삭제 -->
+ <delete id="delete" parameterType="int">
+ 	delete from springboard where num=#{num}
+ </delete>
+ 
+ <!-- 개수 -->
+ <select id="count" resultType="int">
+ 	select count(*) from springboard <include refid="search"/>
+ </select>
+ 
+ <!-- 리스트 내 댓글개수 update -->  <!-- parameter type 안적어줘도 됨. -->
+ <!-- join이 빈번히 일어날꺼같은 bnum과 num 조인하기엔 넘 번거롭 > replycnt 컬럼 하나 더 만들어줌 -->
+ <!-- replycnt가 board에도 select되게 하려면 select 조회문에 replyCnt추가 -->
+ <update id = "updateReplyCnt" parameterType="int">
+ 	update springboard set replycnt = replycnt+#{cnt} where num=#{bnum}
+ </update>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </mapper>

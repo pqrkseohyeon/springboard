@@ -1,0 +1,31 @@
+<script>
+$("#loginBtn").click(function(){
+  	if($("#id").val()==""){
+	alert("아이디를 입력하세요");
+	$("#id").focus();
+	return false;
+}
+if($("#pass").val()==""){
+	alert("비밀번호를 입력하세요");
+	$("#pass").focus();
+	return false;
+}
+	$.ajax({
+		type : "post",
+		url :	"memberLogin",
+		data :	{"id":$("#id").val(),"pass":$("#pass").val()},
+	})//ajax
+	.done(function(resp){
+		if(resp=="no"){
+			alert("회원이 아닙니다. 회원가입 하세요");
+		}else if(resp=="success"){
+			alert("로그인 성공");
+			//location.href="/board/list";
+			${loaction}.attr("href","/board/boardList");
+		}else{
+			alert("비밀번호가 틀립니다.");
+		}
+	})
+	.fail
+})//loginBtn
+</script> 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <!-- 매퍼 네임스페이스 > 이 파일명까지 제대로 입력해야함 -->
+ <mapper namespace="com.myboard.mapper.CommentMapper">
+ 
+<select id="getList" resultType="com.myboard.util.CommentDTO" parameterType="int">
+	select * from commentspringboard where bnum=#{bnum}
+</select>
+ 
+ <insert id="insert" parameterType="com.myboard.util.CommentDTO">
+ 	insert into commentspringboard values (commentspringboard_seq.nextval, 'yelee', #{content}, sysdate, #{bnum})
+ </insert>
+ 
+ <delete id="delete" parameterType="int">
+ 	delete from commentspringboard where cnum=#{cnum}
+ </delete>
+ 
+ <!-- 상세보기 -->
+ <select id="read" resultType="com.myboard.util.CommentDTO">
+ 	select * from commentspringboard where cnum=#{cnum}
+ </select>
+ </mapper>
